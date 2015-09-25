@@ -32,11 +32,11 @@ public class InvertedIndexBuilder {
 		String FILE_PATH = "D:\\Eclipse Workspace\\IRassg1\\TestFiles\\file1.txt";
 		String QUERY = "( treatment OR drug ) AND schizophrenia";
 
-		System.out.print("Enter absolute file path:");
-		FILE_PATH = System.console().readLine();
-		
-		System.out.print("Enter query [leave space before and after the parenthesis]:");
-		QUERY = System.console().readLine();
+//		System.out.print("Enter absolute file path:");
+//		FILE_PATH = System.console().readLine();
+//		
+//		System.out.print("Enter query [leave space before and after the parenthesis]:");
+//		QUERY = System.console().readLine();
 		
 		//read file path
 		File file = new File (FILE_PATH);
@@ -138,30 +138,6 @@ public class InvertedIndexBuilder {
 		/*
 		 * STEP 4: EVALUATE THE QUERY
 		 */
-
-//		List<String> queryResult =  new ArrayList<>();
-//		List<String> term1List =  new ArrayList<>();
-//		List<String> term2List =  new ArrayList<>();
-//
-//		String[] queryTokens = QUERY.split("\\s+");
-//
-//		//check if terms are in the dictionary
-//		if(!validateQueryTerms(postingLists, queryTokens))
-//			return;
-//
-//		term1List = postingLists.get(queryTokens[0]);
-//		term2List = postingLists.get(queryTokens[2]);
-//
-//		//Depending on the operator do the respective operations
-//		if(queryTokens[1].equalsIgnoreCase("AND"))
-//			queryResult = intersect(term1List, term2List);
-//		else if(queryTokens[1].equalsIgnoreCase("OR"))
-//			queryResult = union(term1List, term2List);
-//		else
-//		{
-//			System.out.println("Unsupported operator: " + queryTokens[1]);
-//			return;
-//		}
 		
 		StringTokenizer queryTokens =  new StringTokenizer(QUERY);	//default delim is " \t\n\r\f"
 		
@@ -279,41 +255,43 @@ public class InvertedIndexBuilder {
 	private static List<String> union(List<String> term1DocIDList, List<String> term2DocIDList) {
 
 		List<String> result = new ArrayList<>();
+		
+		int index1 = 0;
+		int index2 = 0;
 
-		while(!term1DocIDList.isEmpty() || !term2DocIDList.isEmpty())
+		while(index1 < term1DocIDList.size() || index2 < term2DocIDList.size())
 		{
 			
-			if(term1DocIDList.isEmpty())
+			if(index1 == term1DocIDList.size())
 			{
-				result.add(term2DocIDList.get(0));
-				term2DocIDList.remove(0);				
+				result.add(term2DocIDList.get(index2));
+				index2++;
 			}
 			
-			else if(term2DocIDList.isEmpty())
+			else if(index2 == term2DocIDList.size())
 			{
-				result.add(term1DocIDList.get(0));
-				term1DocIDList.remove(0);
-				
+				result.add(term1DocIDList.get(index1));
+				index1++;
 			}
 
 			else 
 			{
-				if(term1DocIDList.get(0).equals(term2DocIDList.get(0)))
+				if(term1DocIDList.get(index1) == term2DocIDList.get(index2))
 				{
-					result.add(term1DocIDList.get(0));
+					result.add(term1DocIDList.get(index1));
 					
-					term1DocIDList.remove(0);
-					term2DocIDList.remove(0);
+					index1++;
+					index2++;
 				}
-				else if(Integer.parseInt(term1DocIDList.get(0)) < Integer.parseInt(term2DocIDList.get(0)))
+				else if(Integer.parseInt(term1DocIDList.get(index1)) < Integer.parseInt(term2DocIDList.get(index2)))
 				{
-					result.add(term1DocIDList.get(0));
-					term1DocIDList.remove(0);
+					result.add(term1DocIDList.get(index1));
+					index1++;
 				}
 				else
 				{
-					result.add(term2DocIDList.get(0));
-					term2DocIDList.remove(0);
+					result.add(term2DocIDList.get(index2));
+					index2++;
 				}
 			}
 								
@@ -327,36 +305,24 @@ public class InvertedIndexBuilder {
 
 		List<String> result = new ArrayList<String>();
 
+		int index1 = 0;
+		int index2 = 0;
 
-		while(!term1DocIDList.isEmpty() && !term2DocIDList.isEmpty())
+		while(index1 < term1DocIDList.size() && index2 < term2DocIDList.size())
 		{
-			if(term1DocIDList.get(0).equals(term2DocIDList.get(0)))
+			if(term1DocIDList.get(index1).equals(term2DocIDList.get(index2)))
 			{
-				result.add(term1DocIDList.get(0));				
-				term1DocIDList.remove(0);
-				term2DocIDList.remove(0);				
+				result.add(term1DocIDList.get(index1));				
+				index1++;
+				index2++;				
 			}
-			else if(Integer.parseInt(term1DocIDList.get(0)) < Integer.parseInt(term2DocIDList.get(0)))
-				term1DocIDList.remove(0);
+			else if(Integer.parseInt(term1DocIDList.get(index1)) < Integer.parseInt(term2DocIDList.get(index2)))
+				index1++;
 			else
-				term2DocIDList.remove(0);
+				index2++;
 		}
 
 		return result;
-	}
-
-	private static boolean validateQueryTerms(HashMap<String, List> postingLists, String[] queryTokens) {
-		//check if the terms are actually in the dictionary
-		for(int i = 0; i < queryTokens.length; i+=2)
-		{
-			if(!postingLists.containsKey(queryTokens[i]))
-			{
-				System.out.println(queryTokens[i] + " is not found in the dictionary");
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 	private static void sortListOnTerms(List<List<String>> postings) {
