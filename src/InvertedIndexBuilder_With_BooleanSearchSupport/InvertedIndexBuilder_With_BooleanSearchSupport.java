@@ -1,20 +1,16 @@
-package InvertedIndex;
+package InvertedIndexBuilder_With_BooleanSearchSupport;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.StringTokenizer;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.EmptyStackException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Stack;
 
 /**
@@ -22,16 +18,17 @@ import java.util.Stack;
  * email: rvemuri@emai.arizona.edu
  */
 
-public class InvertedIndexBuilder {
+public class InvertedIndexBuilder_With_BooleanSearchSupport {
 
-	@SuppressWarnings("rawtypes")
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void main(String[] args) 
 	{
 
 
 		String FILE_PATH = "D:\\Eclipse Workspace\\IRassg1\\TestFiles\\file1.txt";
-		String QUERY = "( treatment OR drug ) AND schizophrenia";
-
+		//String QUERY = "( treatment OR drug ) AND ( schizophrenia OR breakthrough )";
+		String QUERY = "treatment OR drug";
+		
 //		System.out.print("Enter absolute file path:");
 //		FILE_PATH = System.console().readLine();
 //		
@@ -107,10 +104,6 @@ public class InvertedIndexBuilder {
 			//when we have read all the occurrences/duplicates of the prev term
 			if(!prevTerm.equals(currentTerm))
 			{
-				//sort the posting list of the previous term (skip if first term)
-				if(prevTerm != "")
-					Collections.sort(postingLists.get(prevTerm));
-
 				//put new term in hashmap
 				List<String> ls = new ArrayList<String>();
 				ls.add(list.get(1));
@@ -120,17 +113,12 @@ public class InvertedIndexBuilder {
 				prevTerm = currentTerm;
 			}
 
-			// if it is the same term with different docId
+			// if it is the same term
 			else
-			{
-				//retrieve the list assoc with the curr term
-				List tempList = postingLists.get(currentTerm);
-
-				//add the docID to the list
-				tempList.add(list.get(1));
-
-				//replace the old list
-				postingLists.put(currentTerm, tempList);
+			{	
+				//do not enter same terms with same DOCIDs
+				if(!postingLists.get(currentTerm).contains(list.get(1)))
+					postingLists.get(currentTerm).add(list.get(1));
 			}
 
 		}
@@ -276,7 +264,7 @@ public class InvertedIndexBuilder {
 
 			else 
 			{
-				if(term1DocIDList.get(index1) == term2DocIDList.get(index2))
+				if(term1DocIDList.get(index1).equals(term2DocIDList.get(index2)))
 				{
 					result.add(term1DocIDList.get(index1));
 					
