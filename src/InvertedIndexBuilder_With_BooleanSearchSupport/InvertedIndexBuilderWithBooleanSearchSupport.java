@@ -1,4 +1,4 @@
-package InvertedIndexBuilder_With_BooleanSearchSupport;
+package InvertedIndexBuilderWithBooleanSearchSupport;
 
 import java.io.BufferedReader;
 import java.io.File;
