@@ -18,22 +18,20 @@ import java.util.Stack;
  * email: rvemuri@emai.arizona.edu
  */
 
-public class InvertedIndexBuilder_With_BooleanSearchSupport {
+public class InvertedIndexBuilder_With_BooleanSearchSupport 
+{
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static void main(String[] args) 
 	{
 
 
-		String FILE_PATH = "D:\\Eclipse Workspace\\IRassg1\\TestFiles\\file1.txt";
-		//String QUERY = "( treatment OR drug ) AND ( schizophrenia OR breakthrough )";
-		String QUERY = "treatment OR drug";
 		
-//		System.out.print("Enter absolute file path:");
-//		FILE_PATH = System.console().readLine();
-//		
-//		System.out.print("Enter query [leave space before and after the parenthesis]:");
-//		QUERY = System.console().readLine();
+		System.out.print("Enter absolute file path:");
+		FILE_PATH = System.console().readLine();
+		
+		System.out.print("Enter query [leave space before and after the parenthesis]:");
+		QUERY = System.console().readLine();
 		
 		//read file path
 		File file = new File (FILE_PATH);
@@ -226,8 +224,8 @@ public class InvertedIndexBuilder_With_BooleanSearchSupport {
 		
 	}
 
-	private static List<String> applyOperator(String operator, List<String> operandList1, List<String> operandList2) {
-
+	private static List<String> applyOperator(String operator, List<String> operandList1, List<String> operandList2) 
+	{
 		if(operator.equals("AND"))
 			return intersect(operandList1, operandList2);
 		else if(operator.equals("OR"))
@@ -240,8 +238,8 @@ public class InvertedIndexBuilder_With_BooleanSearchSupport {
 		}
 	}
 
-	private static List<String> union(List<String> term1DocIDList, List<String> term2DocIDList) {
-
+	private static List<String> union(List<String> term1DocIDList, List<String> term2DocIDList) 
+	{
 		List<String> result = new ArrayList<>();
 		
 		int index1 = 0;
@@ -281,16 +279,14 @@ public class InvertedIndexBuilder_With_BooleanSearchSupport {
 					result.add(term2DocIDList.get(index2));
 					index2++;
 				}
-			}
-								
+			}							
 		}
 		
 		return result;
-
 	}
 
-	private static List<String> intersect(List<String> term1DocIDList, List<String> term2DocIDList) {
-
+	private static List<String> intersect(List<String> term1DocIDList, List<String> term2DocIDList) 
+	{
 		List<String> result = new ArrayList<String>();
 
 		int index1 = 0;
@@ -313,16 +309,15 @@ public class InvertedIndexBuilder_With_BooleanSearchSupport {
 		return result;
 	}
 
-	private static void sortListOnTerms(List<List<String>> postings) {
-
+	private static void sortListOnTerms(List<List<String>> postings) 
+	{
 		Collections.sort(postings, new Comparator<List<String>>() 
-		{    
-			@Override
-			public int compare(List<String> a1, List<String> a2) 
-			{
-				return a1.get(0).compareTo(a2.get(0));
-			}               
-		});
-	}
-	
+			{    
+				@Override
+				public int compare(List<String> a1, List<String> a2) 
+				{
+					return a1.get(0).compareTo(a2.get(0));
+				}	               
+			});
+	}	
 }
